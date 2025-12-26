@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-BEAUTY - KGallery</title>
-    <style>
+
         /* [폰트 및 기본 설정] */
         @import url("https://use.typekit.net/xvh4ffy.css");
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
@@ -47,7 +41,7 @@
             width: 100%; 
             height:300px;
             /* 배경 이미지 설정 */
-            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), url('image/imge_01.jpg') no-repeat  top center/cover;
+            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)), url('../image/imge_01.jpg') no-repeat  top center/cover;
             
             /* [핵심] 내부 요소를 세로 중앙, 가로 꽉 차게 정렬 */
             display: flex;
@@ -161,119 +155,3 @@
         /* [푸터] */
         footer { background: #111; color: #888; padding: 60px 0; text-align: center; font-size: 12px; border-top: 1px solid #333; }
 
-    </style>
-</head>
-<body>
-
-    <header class="top-logo-area">
-        <div class="container">
-          <div class="sticky-top-row">
-          <a href="index.html" class="sticky-logo"><img src="image/K-Gallery_Logo-02.png" alt=""></a>
-        </div></a>
-        </div>
-    </header>
-
-    <section class="sub-hero">
-        <div class="container hero-text-wrapper">
-            <div class="hero-text">
-                <span>Home / K-BEAUTY</span>
-                <h1>K-BEAUTY</h1>
-                <p>Explore the latest Korean skincare trends and beauty innovations defining the global standard.</p>
-            </div>
-        </div>
-    </section>
-
-    <div class="sticky-menu-bar">
-        <div class="container menu-bar-content">
-            <nav class="header-nav">
-                <ul>
-                     <li><a href="#">K-POP</a></li>
-                     <li><a href="blog.html">K-BEAUTY</a></li>
-                     <li><a href="#">K-FOOD</a></li>
-                     <li><a href="#">K-TRAVEL</a></li>
-                     <li><a href="#">K-FASHION</a></li>
-                </ul>
-            </nav>
-
-            <div class="header-search">
-                <img src="https://img.icons8.com/ios-glyphs/30/333333/search--v1.png" alt="검색">
-            </div>
-        </div>
-    </div>
-
-    <section class="list-section">
-        <div class="container">
-            <div class="grid-container">
-                
-                <div class="card-item">
-                    <div class="card-thumb"><a href="post.html"><img src="https://picsum.photos/id/1015/400/300"></a></div>
-                    <div class="card-info">
-                        <h3 class="card-title">K-Beauty: The Philosophy Behind Korea's Global Success</h3>
-                        <p class="card-desc">Why focuses on hydration and gentle ingredients revolutionized the global market.</p>
-                        <span class="card-meta">12.05.2025 | by SJ</span>
-                    </div>
-                </div>
-
-                <div class="card-item">
-                    <div class="card-thumb"><img src="https://picsum.photos/id/1016/400/300"></div>
-                    <div class="card-info">
-                        <h3 class="card-title">10 Steps Skincare Routine: Is it really necessary?</h3>
-                        <p class="card-desc">Analyzing the famous routine and suggesting a diet version for busy mornings.</p>
-                        <span class="card-meta">12.06.2025 | by Editor</span>
-                    </div>
-                </div>
-
-                <div class="card-item">
-                    <div class="card-thumb"><img src="https://picsum.photos/id/1027/400/300"></div>
-                    <div class="card-info">
-                        <h3 class="card-title">Korea's Best Sellers in 2025</h3>
-                        <p class="card-desc">Olive Young's top ranking products you must buy when traveling Seoul.</p>
-                        <span class="card-meta">12.04.2025 | by Admin</span>
-                    </div>
-                </div>
-
-                <div class="card-item">
-                    <div class="card-thumb"><img src="https://picsum.photos/id/106/400/300"></div>
-                    <div class="card-info">
-                        <h3 class="card-title">Best Sunscreens for Summer</h3>
-                        <p class="card-desc">Protect your skin with these lightweight and non-sticky sunscreens.</p>
-                        <span class="card-meta">12.01.2025 | by Admin</span>
-                    </div>
-                </div>
-
-                <div class="card-item">
-                    <div class="card-thumb"><img src="https://picsum.photos/id/111/400/300"></div>
-                    <div class="card-info">
-                        <h3 class="card-title">Glass Skin Secrets</h3>
-                        <p class="card-desc">How to achieve that dewy, glowing look naturally.</p>
-                        <span class="card-meta">11.30.2025 | by Sarah</span>
-                    </div>
-                </div>
-
-                <div class="card-item">
-                    <div class="card-thumb"><img src="https://picsum.photos/id/129/400/300"></div>
-                    <div class="card-info">
-                        <h3 class="card-title">K-Beauty Innovations: What's Next?</h3>
-                        <p class="card-desc">AI-powered skin analysis and customized serum trends.</p>
-                        <span class="card-meta">11.29.2025 | by TechTeam</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <div class="floating-btns">
-        <button class="float-btn chat-btn" onclick="alert('챗봇 연결')">💬</button>
-        <button class="float-btn top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">▲</button>
-    </div>
-
-    <footer>
-        <div class="container">
-            <div class="logo" style="font-size: 24px; font-weight: 900; margin-bottom: 10px;">KGallery</div>
-            <p>COPYRIGHT © KGALLERY. ALL RIGHTS RESERVED.</p>
-        </div>
-    </footer>
-
-</body>
-</html>

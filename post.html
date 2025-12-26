@@ -4,166 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winter Skincare Rituals - KGallery</title>
-    <style>
-        /* [폰트 및 기본 설정] */
-        @import url("https://use.typekit.net/xvh4ffy.css");
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Montserrat', 'Noto Sans KR', sans-serif; color: #111; line-height: 1.8; overflow-x: hidden; }
-        a { text-decoration: none; color: inherit; }
-        img { width: 100%; height: 100%; display: block; object-fit: cover; }
-        ul { list-style: none; }
-
-        /* [유틸리티] */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
-        /* [1. 최상단 로고 영역 (항상 고정)] */
-        .top-logo-area {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            z-index: 1001;
-            background-color: #fff;
-            padding: 10px 0;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            height: 70px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .header-logo img {
-            width: 150px !important;
-            height: auto !important;
-            object-fit: contain;
-            display: block;
-        }
-
-        /* [2. 포스트 히어로 섹션 (높이 300px)] */
-        .post-hero {
-            width: 100%; 
-            height: 300px; /* 요청하신 높이 */
-            /* 겨울 분위기 배경 이미지 */
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://picsum.photos/id/1036/1920/600') no-repeat center/cover;
-            display: flex;
-            align-items: center; /* 세로 중앙 정렬 */
-            text-align: left;
-            color: #fff;
-            position: relative;
-        }
-
-        /* 히어로 텍스트 스타일 */
-        .hero-content { width: 100%; }
-        
-        .category-badge {
-            display: inline-block;
-            background-color: #333;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 5px 12px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .post-title {
-            font-family: 'roca-one', serif; /* Roca 폰트 */
-            font-size: 48px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 15px;
-            letter-spacing: -1px;
-        }
-
-        .post-meta {
-            font-size: 13px;
-            font-weight: 300;
-            opacity: 0.8;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .meta-divider { margin: 0 8px; opacity: 0.5; }
-
-
-        /* [3. 스티키 메뉴바 (로고 밑에 고정)] */
-        .sticky-menu-bar {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 70px; /* 로고 높이만큼 띄움 */
-            z-index: 1000;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .menu-bar-content {
-            display: flex; justify-content: space-between; align-items: center;
-            height: 60px;
-        }
-        .header-nav ul { display: flex; gap: 40px; }
-        .header-nav li { font-size: 14px; font-weight: 600; cursor: pointer; color: #333; transition: 0.3s; }
-        .header-nav li:hover, .header-nav li.active { color: #cccccc; }
-        
-        .header-search { display: flex; align-items: center; }
-        .header-search img { width: 22px; height: 22px; cursor: pointer; opacity: 0.6; transition: 0.3s; }
-        .header-search img:hover { opacity: 1; transform: scale(1.1); }
-
-
-        /* [4. 본문 콘텐츠 영역] */
-        .article-container {
-            max-width: 800px; /* 본문은 읽기 좋게 좁게 설정 */
-            margin: 80px auto 120px; /* 상하 여백 */
-            padding: 0 20px;
-        }
-
-        .article-body p {
-            font-size: 18px;
-            color: #444;
-            margin-bottom: 30px;
-            text-align: justify;
-            word-break: keep-all;
-        }
-
-        /* 본문 중간 제목 */
-        .article-body h2 {
-            font-family: 'roca-one', serif;
-            font-size: 32px;
-            margin-top: 60px;
-            margin-bottom: 25px;
-            color: #111;
-            text-align: center;
-        }
-
-        /* 본문 이미지 스타일 */
-        .article-img-wrapper {
-            margin: 50px 0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .article-img-wrapper img { width: 100%; height: auto; }
-        .img-caption {
-            font-size: 13px; color: #888; text-align: center; margin-top: 10px; font-style: italic;
-        }
-
-        /* 인용구 */
-        .quote-box {
-            border-left: 4px solid #0047AB;
-            padding-left: 20px;
-            margin: 40px 0;
-            font-style: italic;
-            color: #555;
-            font-size: 20px;
-        }
-
-
-        /* [플로팅 버튼 & 푸터] */
-        .floating-btns { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
-        .float-btn { width: 50px; height: 50px; background: #fff; color: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; border: none; }
-        .float-btn:hover { background: #0047AB; color: #fff; transform: translateY(-3px); }
-        .chat-btn { background: #cae0ff; }
-
-        footer { background: #111; color: #888; padding: 60px 0; text-align: center; font-size: 12px; border-top: 1px solid #333; }
-
-    </style>
+    <link rel="stylesheet" href="css/post_style.css">
 </head>
 <body>
 
@@ -191,11 +32,11 @@
         <div class="container menu-bar-content">
             <nav class="header-nav">
                 <ul>
-                    <li><a href="#">K-POP</a></li>
+                    <li><a href="blog pop.html">K-POP</a></li>
                     <li class="active"><a href="blog.html">K-BEAUTY</a></li>
-                    <li><a href="#">K-FOOD</a></li>
-                    <li><a href="#">K-TRAVEL</a></li>
-                    <li><a href="#">K-FASHION</a></li>
+                    <li><a href="blog food.html">K-FOOD</a></li>
+                    <li><a href="blog travel.html">K-TRAVEL</a></li>
+                    <li><a href="blog fashion.html">K-FASHION</a></li>
                 </ul>
             </nav>
             <div class="header-search">
