@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KGallery - Art & Lifestyle</title>
+    <style>
+        /* [기본 스타일] */
+        @import url("https://use.typekit.net/xvh4ffy.css");
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Montserrat','Noto Sans KR', sans-serif; color: #111; line-height: 1.5; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { width: 100%; height: 100%; display: block; object-fit: cover; }
+        
+        /* [유틸리티] */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .container-fluid { width: 100vw; padding: 0; overflow: hidden; }
+        
+        .section-title { font-family: "roca", serif; font-weight: 700; font-style: normal; font-size: 36px; margin-bottom: 40px; 
+            text-transform: uppercase; letter-spacing: -1px;
+        }
+        section { padding: 60px 0; }
+        
+        /* [이미지 호버 효과] */
+        .img-wrapper { 
+            overflow: hidden; cursor: pointer; position: relative; 
+            border: 2px solid #ddd; transition: border-color 0.3s;
+        }
+        .img-wrapper::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0047AB; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .img-wrapper:hover::after { opacity: 0.15; }
+        .img-wrapper:hover { border-color: #0047AB; }
+        .img-wrapper:hover img { transform: scale(1.05); transition: transform 0.5s; }
+        
+      /* [스크롤 스티키 헤더 스타일 (2층 구조)] */
+        #sticky-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            z-index: 999;
+            padding-top: 15px; /* 로고 위 여백 */
+            
+            /* 숨김 처리 및 애니메이션 */
+            transform: translateY(-100%);
+            transition: transform 0.4s ease-in-out;
+            /*box-shadow: 0 4px 10px rgba(0,0,0,0.05);*/
+        }
+
+        #sticky-header.visible {
+            transform: translateY(0);
+        }
+
+        /* [1층] 로고 스타일 */
+        .sticky-top-row {
+            display: flex;             /* Flexbox 사용 */
+            justify-content: center;   /* 가로 완전 중앙 정렬 */
+            align-items: center;       /* 세로 중앙 정렬 */
+            padding-bottom: 15px;      /* 로고 아래 여백 */
+            width: 100%;
+        }
+        .sticky-logo {
+           display: block;            /* 앵커 태그를 블록으로 */
+           line-height: 1;
+        }
+
+        /* [중요] 로고 이미지 전용 스타일 추가 */
+        /* body의 img { width: 15% } 설정이 로고를 망가뜨리지 않게 방지 */
+        .sticky-logo img {
+           width:200px !important; 
+            /* 비율이 깨지지 않도록 높이는 자동 설정 */
+            height: auto !important; 
+            /* 꽉 채우기(cover) 속성 무시하고 이미지 전체 다 보여주기 */
+            object-fit: contain !important; 
+            /* 중앙 정렬 */
+            margin: 0 auto;
+        }
+
+
+        /* [2층] 100% 배경 및 보더 (핵심!) */
+        .sticky-bottom-wrapper {
+            width: 100%; /* 화면 전체 너비 */
+            border-top: 1px solid #ddd;    /* 위쪽 회색선 100% */
+            border-bottom: 1px solid #ddd; /* 아래쪽 회색선 100% */
+            background-color: #fff;        /* 배경색 */
+        }
+
+        /* [2층 내부] 1200px 컨테이너 및 정렬 */
+        .sticky-bottom-content {
+            display: flex; 
+            justify-content: space-between; /* 양 끝 배분 (메뉴-왼쪽, 검색-오른쪽) */
+            align-items: center;
+            height: 50px; /* 메뉴바 높이 고정 */
+        }
+
+        /* 메뉴 스타일 */
+        .sticky-nav ul {
+            display: flex; gap: 40px; /* 메뉴 간격 넓게 */
+            list-style: none; margin: 0; padding: 0;
+        }
+        .sticky-nav li {
+            font-size: 14px; font-weight: 600; cursor: pointer; color: #333; transition: 0.3s;
+        }
+        .sticky-nav li:hover { color: #d3d3d3; }
+
+        /* 검색 아이콘 스타일 */
+        .sticky-search {
+            display: flex; align-items: center;
+        }
+        .sticky-search img {
+            width: 22px; height: 22px; cursor: pointer; opacity: 0.6; transition: 0.3s;
+        }
+        .sticky-search img:hover { opacity: 1; transform: scale(1.1); }
+
+        
+        /* [헤더] */
+        header { padding: 30px 0 0px; text-align: center; }
+        
+        .logo { 
+          /* 텍스트 관련 속성(font-size 등)은 이미지라 필요 없으니 제거하거나 무시됩니다 */
+            width: 450px;
+            margin: 0 auto 50px auto; /* 상 우 하 좌 여백 (아래쪽 50px 띄움) */
+            
+            /* [핵심] 로고 컨테이너의 너비를 직접 지정합니다 */
+            /* 원하는 크기로 이 숫자를 변경하세요 (예: 250px, 300px, 400px) */
+            height: auto; 
+            
+            display: block;
+        }
+        nav ul { display: flex; justify-content: center; gap: 100px; font-size: 20px; font-weight: 600; }
+        nav li { cursor: pointer; transition: color 0.3s; }
+        nav li:hover { color: #cccccc; }
+
+        /* [추가된 검색창 스타일] */
+        .search-container {
+            display: flex; justify-content: center; margin-top: 70px; margin-bottom: 10px;
+        }
+        .search-box {
+            display: flex; align-items: center;
+            background-color: #fff; 
+            border: 1px solid #e0e0e0;
+            border-radius: 50px; /* 둥근 알약 모양 */
+            padding: 15px 30px;
+            width: 100%; max-width: 600px; /* 너비 제한 */
+            /*box-shadow: 0 4px 10px rgba(0,0,0,0.03); /* 부드러운 그림자 */
+            transition: all 0.3s ease;
+        }
+        .search-box:hover, .search-box:focus-within {
+            border-color: #cccccc; /* 포커스 시 브랜드 컬러 */
+            box-shadow: 0 4px 15px rgba(0,71,171,0.1);
+            background-color: #fff;
+        }
+        .search-icon-img { 
+            width: 20px; /* 아이콘 크기 */
+            height: 20px; 
+            margin-right: 15px; 
+            opacity: 0.4; /* 회색 느낌을 위해 투명도 조절 */
+            object-fit: contain; /* 비율 유지 */
+        }
+        .search-box input {
+            border: none; background: transparent; outline: none;
+            flex-grow: 1; font-size: 16px; font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+            color: #333;
+        }
+        .search-box input::placeholder { color: #aaa; }
+      /* [NEW] 마이크 아이콘 스타일 (새로 추가!) */
+        .mic-icon-img {
+            width: 22px; /* 크기 조절 */
+            height: 22px;
+            margin-left: 15px; /* 왼쪽 여백 */
+            opacity: 0.5; /* 회색톤 */
+            cursor: pointer; /* 손가락 모양 커서 */
+            transition: 0.2s; /* 부드러운 효과 */
+            object-fit: contain;
+        }
+        /* 마우스 올렸을 때 진해지면서 커짐 */
+        .mic-icon-img:hover { 
+            opacity: 1; 
+            transform: scale(1.1); 
+            filter: invert(18%) sepia(94%) saturate(2373%) hue-rotate(205deg) brightness(96%) contrast(101%); /* 코발트 블루 색상 효과 */
+        }
+
+        /* [MUST READ & LATEST 공통 레이아웃] */
+        .split-section { 
+            display: flex; 
+            gap: 40px; 
+            /* [핵심 1] 높이를 꽉 채우지 말고 시작점에 맞춤 */
+            /* 그래야 왼쪽이 움직일 공간(트랙)이 생깁니다 */
+            align-items: start; 
+            position: relative;
+        }
+
+        .split-left { 
+            flex: 1; 
+            /* [핵심 2] 스티키 포지션 적용 */
+            position: -webkit-sticky; /* 사파리 브라우저 호환 */
+            position: sticky;
+            
+            /* [핵심 3] 상단에서 얼마나 떨어져서 붙을지 설정 */
+            /* 아까 만든 헤더(약 140~150px)를 고려해서 180px 정도로 여유 있게 잡음 */
+            top: 180px; 
+            
+            height: fit-content; /* 내용물만큼만 높이 잡기 */
+        }
+
+        .split-left .img-wrapper { 
+            width: 100%; 
+            /* 높이는 이미지 비율에 맡기거나 고정 */
+            height: auto; 
+            border: none; 
+            border-radius: 1.5%; 
+        }
+        /* 피드 아이템 스타일 */
+        .feed-item { display: flex; gap: 20px; align-items: start; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .feed-thumb { flex: 0 0 150px; height: 150px; }
+        .feed-thumb .img-wrapper { height: 100%; border: none; border-radius: 3%; }
+        .feed-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .feed-cate { font-size: 12px; font-weight: bold; color: #a8a8a8; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .feed-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
+        .feed-desc { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        .feed-meta { font-size: 11px; color: #999; margin-top: auto; }
+
+       /* 타이틀 확장 */
+        .split-right-grid .section-title {
+            grid-column: 1 / -1; width: 100%; margin-bottom: 0px; text-align: left;
+        }
+       
+        /* [MUST READ 전용] */
+        #must-read .split-right-grid {
+            flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 30px 20px;
+        }
+        #must-read .feed-item {
+            flex-direction: column; border-bottom: none; padding-bottom: 0; margin-bottom: 0; gap: 15px; border-radius: 3%;
+        }
+        #must-read .feed-thumb { flex: auto; width: 100%; height: 200px; }
+        #must-read .feed-title { font-size: 16px; margin-bottom: 5px; }
+        #must-read .feed-desc { -webkit-line-clamp: 2; margin-bottom: 10px; }
+
+        /* [THE LATEST 전용] */
+         #latest .feed-item {
+            flex-direction: column; border-bottom: none; padding-bottom: 0; margin-bottom: 0; gap: 15px; border-radius: 3%;
+        }
+        #latest .feed-thumb { flex: auto; width: 100%; height: 200px; }
+        #latest .split-right-list {flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; gap: 30px 20px;}
+
+
+        /* [슬라이더 공통] */
+        .slider-wrapper { overflow: hidden; width: 100%; }
+        .slider-track { display: flex; width: max-content; } 
+        
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+            background: rgba(255,255,255,0.9); border: 1px solid #ddd; width: 50px; height: 50px; 
+            border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { background: #0047AB; color: #fff; border-color: #0047AB; }
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
+
+        /* [MOST POPULAR] */
+        #most-popular { background: linear-gradient(to bottom, #f9f9f9 60%, #fff 60%); position: relative; }
+        #most-popular .container-fluid { position: relative; }
+        /* 5.5개 노출 */
+        #pop-track .slide-item { flex: 0 0 calc(100vw / 5.5); padding-right: 15px; }
+        #pop-track .img-wrapper { height: 380px; border: 2px solid #ddd; border-radius: 3%;}
+
+        /* [K-FOOD] */
+        #k-food { text-align: left; background-color: #fff; }
+        .food-container { max-width: 1200px; margin: 0 auto; position: relative; padding: 0px 20px;}
+        .food-main-slider { overflow: hidden; border-radius: 4px; position: relative; margin-bottom: 30px; }
+        .food-track { display: flex; transition: transform 0.5s ease; }
+        .food-slide { flex: 0 0 100%; } 
+        .food-slide .img-wrapper { height: 500px; border: none; cursor: default; }
+        .food-slide .img-wrapper::after { display: none; }
+        .food-thumbs { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .thumb-item { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: 0.3s; }
+        .thumb-item:hover, .thumb-item.active { opacity: 1; transform: scale(1.1); border-color: #000; }
+
+        /* [K-TRAVEL] */
+        .travel-layout { display: flex; gap: 40px; align-items: stretch; }
+        .travel-left { flex: 1.5; display: flex; }
+        .travel-left .img-wrapper { width: 100%; height: auto; min-height: 500px; border: none; }
+        .travel-right { flex: 1; display: flex; flex-direction: column; border-top: 2px solid #000; height: auto; }
+        
+        .travel-tab { 
+            flex: 1; padding: 20px 0; border-bottom: 1px solid #ddd; cursor: pointer; 
+            display: flex; justify-content: space-between; align-items: center; transition: 0.3s; 
+        }
+        .travel-tab-text {
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            font-size: 16px; line-height: 1.6; color: #333;
+        }
+        .travel-title { font-family: 'Montserrat', 'sans-serif', 'serif'; font-size: 20px; font-weight: 700; margin-right: 8px; color: #000; }
+        .travel-desc { font-family: 'Montserrat', 'sans-serif'; font-weight: 300; color: #555; }
+        .travel-tab:hover .travel-title, .travel-tab.active .travel-title { color: #0047AB; }
+
+        /* [VIDEO] */
+        #videos { background-color: #f4f4f4; position: relative; }
+        #videos .section-title { padding-left: 20px; }
+        #video-track .slide-item { flex: 0 0 40vw; padding-right: 20px; position: relative; }
+        #video-track .img-wrapper { height: 350px; border: 2px solid transparent; }
+        .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; pointer-events: none; z-index: 5; }
+
+        /* [퀵 메뉴 (우측 중앙)] */
+        .quick-menu {
+            position: fixed; top: 29%; right: 20px; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 2px; z-index: 100;
+        }
+        .quick-btn {
+            width: 60px; height: 60px; background: #fff; border: 1px solid #ddd;
+            border-radius: 10%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-size: 10px; font-weight: bold; color: #333;
+           cursor: pointer; transition: 0.3s;
+            text-align: center; line-height: 1.2;
+        }
+        .quick-btn:hover { background: #cae0ff; border-color: #61a3ff;}
+        .quick-icon { font-size: 18px; margin-bottom: 3px; }
+
+        /* [하단 플로팅 버튼 (챗봇 & Top)] */
+        .floating-btns {
+            position: fixed; bottom: 5px; right: 20px;
+            display: flex; flex-direction: column; gap: 10px; z-index: 100;
+        }
+        float-btn top-btn span{color:#333;}
+        .float-btn {
+            width: 50px; height: 50px; background: #fff; color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: 0.3s; border: none;
+        }
+        .float-btn:hover { background: #61a3ff;; transform: translateY(-3px); }
+        .chat-btn { background:#cae0ff } /* 챗봇은 강조색 */
+
+        /* [Footer] */
+        footer { background: #111; color: #888; padding: 60px 0; text-align: center; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <header id="sticky-header">
+        
+        <div class="sticky-top-row">
+            <a href="#" class="sticky-logo"><img src="image/K-Gallery_Logo-02.png" alt=""></a>
+        </div>
+
+        <div class="sticky-bottom-wrapper">
+            <div class="container sticky-bottom-content">
+                <nav class="sticky-nav">
+                    <ul>
+                        <li><a href="#">K-POP</a></li>
+                        <li><a href="blog.html">K-BEAUTY</a></li>
+                        <li><a href="#">K-FOOD</a></li>
+                        <li><a href="#">K-TRAVEL</a></li>
+                        <li><a href="#">K-FASHION</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sticky-search">
+                    <img src="https://img.icons8.com/ios-glyphs/30/333333/search--v1.png" alt="검색" onclick="alert('검색창 열기')">
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <header>
+        <div class="container">
+            <div class="logo"><a href="index.html"><img src="image/K-Gallery_Logo-02.png" alt=""></a></div>
+            <nav style="margin-top:20px;">
+                <ul>
+                    <li><a href="#">K-POP</a></li>
+                    <li><a href="blog.html">K-BEAUTY</a></li>
+                    <li><a href="#">K-FOOD</a></li>
+                    <li><a href="#">K-TRAVEL</a></li>
+                    <li><a href="#">K-FASHION</a></li>
+                </ul>
+            </nav>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" class="search-icon-img" alt="검색">
+                    
+                    <input type="text" placeholder="Search K-Gallery...">
+                    
+                    <img src="https://img.icons8.com/ios-filled/50/999999/microphone.png" class="mic-icon-img" onclick="alert('음성 검색 기능 활성화')" alt="음성검색">
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <section id="must-read">
+        <div class="container">
+            <div class="split-section">
+                <div class="split-left">
+                    <div class="img-wrapper"><img src="https://picsum.photos/id/1027/800/1200" alt="Must Read Main"></div>
+                </div>
+                <div class="split-right-grid">
+                     <div class="section-title">MUST READ</div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1015/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">K-beauty products idols use</h4><div class="feed-desc">Discover the secret routine of top K-pop stars.</div></div>
+                            <span class="feed-meta">2025.07.28 | Kang Se-eun</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1016/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Best sunscreens for summer</h4><div class="feed-desc">Protect your skin with these top-rated items.</div></div>
+                            <span class="feed-meta">2025.07.29 | Lee Min-ho</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1018/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Morning skincare routine</h4><div class="feed-desc">Start your day with a fresh glow.</div></div>
+                            <span class="feed-meta">2025.07.30 | Park Ji-sung</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1020/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Night repair secrets</h4><div class="feed-desc">How to wake up with perfect skin.</div></div>
+                            <span class="feed-meta">2025.07.31 | Kim Yuna</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1025/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Top 5 moisturizers</h4><div class="feed-desc">Hydration is key for healthy skin.</div></div>
+                            <span class="feed-meta">2025.08.01 | Choi Woo-shik</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1026/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Gentle cleansers</h4><div class="feed-desc">Remove makeup without irritation.</div></div>
+                            <span class="feed-meta">2025.08.02 | Song Hye-kyo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="most-popular">
+        <div class="container" style="margin-bottom: 20px;"><div class="section-title">MOST POPULAR</div></div>
+        <div class="container-fluid">
+            <button class="nav-btn prev-btn" onclick="rotateSlide('pop-track', -1)">&#10094;</button>
+            <button class="nav-btn next-btn" onclick="rotateSlide('pop-track', 1)">&#10095;</button>
+            <div class="slider-wrapper">
+                <div class="slider-track" id="pop-track">
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/101/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/102/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/103/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/104/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/106/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/107/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/108/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/109/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/110/400/500"></div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/111/400/500"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="latest">
+        <div class="container">
+            <div class="section-title">THE LATEST</div>
+            <div class="split-section">
+                <div class="split-left">
+                    <div class="img-wrapper"><img src="https://picsum.photos/id/401/800/800" alt="Latest Main"></div>
+                </div>
+                <div class="split-right-list">
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1015/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">K-beauty products idols use</h4><div class="feed-desc">Discover the secret routine of top K-pop stars.</div></div>
+                            <span class="feed-meta">2025.07.28 | Kang Se-eun</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1016/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Best sunscreens for summer</h4><div class="feed-desc">Protect your skin with these top-rated items.</div></div>
+                            <span class="feed-meta">2025.07.29 | Lee Min-ho</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1018/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Morning skincare routine</h4><div class="feed-desc">Start your day with a fresh glow.</div></div>
+                            <span class="feed-meta">2025.07.30 | Park Ji-sung</span>
+                        </div>
+                    </div>
+                    <div class="feed-item">
+                        <div class="feed-thumb"><div class="img-wrapper"><img src="https://picsum.photos/id/1020/300/300"></div></div>
+                        <div class="feed-content">
+                            <div><span class="feed-cate">SKINCARE</span><h4 class="feed-title">Night repair secrets</h4><div class="feed-desc">How to wake up with perfect skin.</div></div>
+                            <span class="feed-meta">2025.07.31 | Kim Yuna</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="k-food">
+        <div class="food-container">
+            <div class="section-title">K-FOOD</div>
+            <div class="food-main-slider">
+                <div class="food-track" id="food-track">
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/425/1200/600"></div></div>
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/426/1200/600"></div></div>
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/427/1200/600"></div></div>
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/428/1200/600"></div></div>
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/429/1200/600"></div></div>
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/430/1200/600"></div></div>
+                    <div class="food-slide"><div class="img-wrapper"><img src="https://picsum.photos/id/431/1200/600"></div></div>
+                </div>
+            </div>
+            <div class="food-thumbs">
+                <div class="thumb-item active" onclick="goFoodSlide(0)"><img src="https://picsum.photos/id/425/100/100"></div>
+                <div class="thumb-item" onclick="goFoodSlide(1)"><img src="https://picsum.photos/id/426/100/100"></div>
+                <div class="thumb-item" onclick="goFoodSlide(2)"><img src="https://picsum.photos/id/427/100/100"></div>
+                <div class="thumb-item" onclick="goFoodSlide(3)"><img src="https://picsum.photos/id/428/100/100"></div>
+                <div class="thumb-item" onclick="goFoodSlide(4)"><img src="https://picsum.photos/id/429/100/100"></div>
+                <div class="thumb-item" onclick="goFoodSlide(5)"><img src="https://picsum.photos/id/430/100/100"></div>
+                <div class="thumb-item" onclick="goFoodSlide(6)"><img src="https://picsum.photos/id/431/100/100"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="k-travel">
+        <div class="container">
+            <div class="section-title">K-TRAVEL</div>
+            <div class="travel-layout">
+                <div class="travel-left">
+                    <div class="img-wrapper"><img id="travel-display" src="https://picsum.photos/id/50/800/600"></div>
+                </div>
+                <div class="travel-right">
+                    <div class="travel-tab active" onclick="changeTab(this, 'https://picsum.photos/id/50/800/600')">
+                        <div class="travel-tab-text">
+                            <span class="travel-title">Damyang Bamboo</span>
+                            <span class="travel-desc">Relaxing walk through the green forest, feeling the breeze of nature.</span>
+                        </div>
+                        <span>&rsaquo;</span>
+                    </div>
+                    <div class="travel-tab" onclick="changeTab(this, 'https://picsum.photos/id/54/800/600')">
+                        <div class="travel-tab-text">
+                            <span class="travel-title">Gangwon Surfing</span>
+                            <span class="travel-desc">Active summer vacation enjoying the waves at Yangyang Surfyy Beach.</span>
+                        </div>
+                        <span>&rsaquo;</span>
+                    </div>
+                    <div class="travel-tab" onclick="changeTab(this, 'https://picsum.photos/id/57/800/600')">
+                        <div class="travel-tab-text">
+                            <span class="travel-title">Gyeongju History</span>
+                            <span class="travel-desc">Walking through time in the city of museums, exploring ancient heritage.</span>
+                        </div>
+                        <span>&rsaquo;</span>
+                    </div>
+                    <div class="travel-tab" onclick="changeTab(this, 'https://picsum.photos/id/58/800/600')">
+                        <div class="travel-tab-text">
+                            <span class="travel-title">Jeju Olle Trail</span>
+                            <span class="travel-desc">Healing time walking along the beautiful emerald ocean view of Jeju Island.</span>
+                        </div>
+                        <span>&rsaquo;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="videos">
+        <div class="container" style="margin-bottom: 20px;"><div class="section-title">VIDEOS</div></div>
+        <div class="container-fluid">
+            <button class="nav-btn prev-btn" onclick="rotateSlide('video-track', -1)">&#10094;</button>
+            <button class="nav-btn next-btn" onclick="rotateSlide('video-track', 1)">&#10095;</button>
+            <div class="slider-wrapper">
+                <div class="slider-track" id="video-track">
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/15/600/350"></div><div class="play-icon">▶</div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/28/600/350"></div><div class="play-icon">▶</div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/36/600/350"></div><div class="play-icon">▶</div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/42/600/350"></div><div class="play-icon">▶</div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/48/600/350"></div><div class="play-icon">▶</div></div>
+                    <div class="slide-item"><div class="img-wrapper"><img src="https://picsum.photos/id/59/600/350"></div><div class="play-icon">▶</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="quick-menu">
+        <a href="#" class="quick-btn">
+            <span class="quick-icon">🛍️</span>
+            <span>SHOP</span>
+        </a>
+        <a href="#" class="quick-btn">
+            <span class="quick-icon">📱</span>
+            <span>FEED</span>
+        </a>
+        <a href="#" class="quick-btn">
+            <span class="quick-icon">🎉</span>
+            <span>EVENT</span>
+        </a>
+    </div>
+
+    <div class="floating-btns">
+        <button class="float-btn chat-btn" onclick="alert('챗봇 연결')">💬</button>
+        <button class="float-btn top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});"><span>TOP</span>TOP</button>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="logo">KGallery</div>
+            <p>COPYRIGHT © KGALLERY. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <script>
+        // [스크롤 감지하여 헤더 보여주기]
+        window.addEventListener('scroll', function() {
+            const stickyHeader = document.getElementById('sticky-header');
+            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+            // 스크롤을 300px 이상 내리면 헤더 등장
+            if (scrollPosition > 300) {
+                stickyHeader.classList.add('visible');
+            } else {
+                // 다시 위로 올리면 헤더 숨김
+                stickyHeader.classList.remove('visible');
+            }
+        });
+
+
+
+        // [1] MOST POPULAR & VIDEO: 무한 회전 슬라이드
+        function rotateSlide(trackId, direction) {
+            const track = document.getElementById(trackId);
+            const firstItem = track.firstElementChild;
+            const itemWidth = firstItem.getBoundingClientRect().width;
+            
+            if (direction === 1) {
+                track.style.transition = 'transform 0.5s ease-out';
+                track.style.transform = `translateX(-${itemWidth}px)`;
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    track.appendChild(firstItem);
+                    track.style.transform = 'translateX(0)';
+                }, 500);
+            } else {
+                const lastItem = track.lastElementChild;
+                track.style.transition = 'none';
+                track.prepend(lastItem);
+                track.style.transform = `translateX(-${itemWidth}px)`;
+                setTimeout(() => {
+                    track.style.transition = 'transform 0.5s ease-out';
+                    track.style.transform = 'translateX(0)';
+                }, 10);
+            }
+        }
+
+        // [2] K-FOOD: 자동 슬라이드 & 썸네일
+        let foodIndex = 0;
+        const foodTrack = document.getElementById('food-track');
+        const foodThumbs = document.querySelectorAll('.thumb-item');
+        const totalFood = foodThumbs.length;
+
+        function goFoodSlide(index) {
+            foodIndex = index;
+            updateFoodSlider();
+        }
+
+        function updateFoodSlider() {
+            foodTrack.style.transform = `translateX(-${foodIndex * 100}%)`;
+            foodThumbs.forEach(t => t.classList.remove('active'));
+            foodThumbs[foodIndex].classList.add('active');
+        }
+
+        function autoFoodSlide() {
+            foodIndex++;
+            if (foodIndex >= totalFood) { foodIndex = 0; }
+            updateFoodSlider();
+        }
+
+        // [3] 자동 실행 설정
+        function startAutoPlay() {
+            setInterval(() => rotateSlide('pop-track', 1), 3000);
+            setInterval(() => rotateSlide('video-track', 1), 3000);
+            setInterval(autoFoodSlide, 3000);
+        }
+
+        window.onload = startAutoPlay;
+
+        // [4] K-TRAVEL
+        function changeTab(element, imgUrl) {
+            document.querySelectorAll('.travel-tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('travel-display').src = imgUrl;
+        }
+    </script>
+</body>
+</html>

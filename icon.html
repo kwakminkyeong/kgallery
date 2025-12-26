@@ -1,0 +1,45 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    /* 기본 스타일: 흰색 테두리, 배경 투명 */
+    .feed-rect {
+      fill: transparent;
+      stroke: #ffffff;
+      stroke-width: 1.5;
+      transition: all 0.3s ease;
+    }
+
+    /* SVG 전체에 마우스를 올렸을 때(Hover) 공통 변화 */
+    svg:hover .feed-rect {
+      stroke: none; /* 테두리 제거 */
+    }
+    
+    /* 호버 시 각 사각형 별 컬러 (오로라 그라디언트) */
+    svg:hover #r1 { fill: #FF0080; } /* 핫핑크 */
+    svg:hover #r2 { fill: #E100AA; }
+    svg:hover #r3 { fill: #C100D5; }
+    svg:hover #r4 { fill: #A200FF; } /* 보라 */
+    svg:hover #r5 { fill: #7928CA; }
+    svg:hover #r6 { fill: #4F51E5; }
+    svg:hover #r7 { fill: #2679FF; } /* 블루 */
+    svg:hover #r8 { fill: #00A2FF; }
+    svg:hover #r9 { fill: #00DFD8; } /* 민트 */
+
+    /* 호버 시 아이콘 살짝 떠오르는 효과 */
+    svg:hover {
+      transform: translateY(-2px);
+      transition: transform 0.3s ease;
+    }
+  </style>
+
+  <rect id="r1" class="feed-rect" x="1" y="1" width="9" height="9" rx="1" />
+  <rect id="r2" class="feed-rect" x="11.5" y="1" width="9" height="9" rx="1" />
+  <rect id="r3" class="feed-rect" x="22" y="1" width="9" height="9" rx="1" />
+
+  <rect id="r4" class="feed-rect" x="1" y="11.5" width="9" height="9" rx="1" />
+  <rect id="r5" class="feed-rect" x="11.5" y="11.5" width="9" height="9" rx="1" />
+  <rect id="r6" class="feed-rect" x="22" y="11.5" width="9" height="9" rx="1" />
+
+  <rect id="r7" class="feed-rect" x="1" y="22" width="9" height="9" rx="1" />
+  <rect id="r8" class="feed-rect" x="11.5" y="22" width="9" height="9" rx="1" />
+  <rect id="r9" class="feed-rect" x="22" y="22" width="9" height="9" rx="1" />
+</svg>
